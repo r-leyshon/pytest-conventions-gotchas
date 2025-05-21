@@ -13,44 +13,56 @@ the README in the branches for specific guidance.
 
 ## Branch Overview: `main`
 
-This branch displays a modern & minimal setup where code in the `src` directory
-can be discovered by `pytest`. This code was written with python3.12 and
-`pytest==8.3.5`, older versions may require a different setup.
-
-The source code is a simple fizzbuzz function.
-
-Note the presence of a minimal `pyproject.toml`. This config step is important
-in fixing the `PYTHONPATH` so that `pytest` knows to discover code relative to
-the root directory rather than `tests`.
+This branch demonstrates common pitfalls in pytest, particularly focusing on
+collection-time side effects.
 
 ## Instructions
 
-Practise invocation methods from the command line. Notice the number of tests
-**collected** and **executed** with each command.
+1. Run the collection side effects example:
+   ```bash
+   pytest tests/test_collection_side_effects.py --collect-only
+   ```
+   Notice that the log file is created in the `logs` directory during
+   collection, before any tests actually run.
 
-1. `pytest`
-2. `pytest -v`
-3. `pytest --collect-only`
-3. `pytest tests/test_fizzbuzz.py`
-4. `pytest -v tests/test_fizzbuzz.py::test_fizzbuzz_buzzes`
-5. `pytest -k 'buzzes'`
+2. Run a different test file:
+   ```bash
+   pytest tests/test_fizzbuzz.py -v
+   ```
+   Notice that no log file is created because the collection side effects
+   module is not imported.
 
 ## Notes
 
-### Test structure
+### Collection-time Side Effects
 
-* The structure of the `tests` folder mirrors `src`.
-* `assert` statements include a second optional argument - a message to display
-when the test fails. Feel free to expose important values with f-strings -
-super helpful.
-* Tests are given names that give clues to their purpose. Multiple assertions
-can be grouped under the same test when multiple cases should be tested.
+The `collection_side_effects.py` module demonstrates how default arguments in
+function signatures can cause side effects during pytest's collection phase.
+This is particularly important to be aware of when:
 
-### Collection versus Execution
+- Using default arguments that have side effects
+- Defining fixtures or test functions with default arguments
+- Working with any code that might have side effects in function signatures
 
-The discovery phase of a `pytest` workflow scans your repository for test
-modules, classes and functions. A list of tests to run is collated before any
-code is run. Once `pytest` is finished collecting tests, the test logic will
-be executed.
+### Best Practices
 
-> Collection is like creating a playlist. Execution is playing the songs.
+To avoid collection-time side effects, consider these approaches:
+
+If possible, consider logging only at the top level (eg in `main`), although
+the required level of logging may make this challenging.
+
+Otherwise, move function invocations to the function body:
+   ```python
+   # Instead of this:
+   def some_func(logger=write_to_log("Logged from signature")):
+       pass
+
+   # Do this:
+   def some_func(logger=None):
+       if logger is None:
+           logger = write_to_log("Logged from body")
+       pass
+   ```
+
+This patterns ensure that side effects only occur when the function is actually
+called, not during collection.
