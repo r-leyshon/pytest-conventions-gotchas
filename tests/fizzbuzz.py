@@ -1,3 +1,4 @@
+"""This module will not be discovered by pytest."""
 from src.fizzbuzz import fizzbuzz
 
 def test_fizzbuzz_fizzes():
