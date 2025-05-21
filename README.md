@@ -11,46 +11,78 @@ the README in the branches for specific guidance.
 2. Create a virtual environment with python 3.12 or later.
 3. Install the requirements.
 
-## Branch Overview: `main`
+## Branch Overview: `4-deselecting-tests`
 
-This branch displays a modern & minimal setup where code in the `src` directory
-can be discovered by `pytest`. This code was written with python3.12 and
-`pytest==8.3.5`, older versions may require a different setup.
+This branch demonstrates how to selectively run or skip tests.
 
-The source code is a simple fizzbuzz function.
-
-Note the presence of a minimal `pyproject.toml`. This config step is important
-in fixing the `PYTHONPATH` so that `pytest` knows to discover code relative to
-the root directory rather than `tests`.
+The src code includes `fizzbuzz` from `main` branch. But there is also a module
+of 'slow' code that we may wish to skip.
 
 ## Instructions
 
-Practise invocation methods from the command line. Notice the number of tests
-**collected** and **executed** with each command.
+1. Run all tests:
+   ```bash
+   pytest -v
+   ```
 
-1. `pytest`
-2. `pytest -v`
-3. `pytest --collect-only`
-3. `pytest tests/test_fizzbuzz.py`
-4. `pytest -v tests/test_fizzbuzz.py::test_fizzbuzz_buzzes`
-5. `pytest -k 'buzzes'`
+2. Run all tests except slow ones:
+   ```bash
+   pytest -m "not slow"
+   ```
+
+3. Run only slow tests:
+   ```bash
+   pytest -m "slow"
+   ```
+
+4. View available markers and their descriptions:
+   ```bash
+   pytest --markers
+   ```
+
+## Using Marks in Your Test Suite
+
+Marks are a powerful way to categorize and control test execution. Here are
+some common use cases:
+
+1. **Slow Tests** (implemented in this branch)
+   - Mark tests that take a long time to run
+   - Skip during development with `-m "not slow"`
+
+2. **Integration Tests**
+   - Mark tests that require external services or complex setup
+   - Example: `@pytest.mark.integration`
+
+3. **Smoke Tests**
+   - Mark critical path tests that should run first
+   - Example: `@pytest.mark.smoke`
+
+4. **Feature-specific Tests**
+   - Group tests by feature or component
+   - Example: `@pytest.mark.api`, `@pytest.mark.ui`
+
+5. **Environment-specific Tests**
+   - Mark tests that should only run in certain environments
+   - Example: `@pytest.mark.production`, `@pytest.mark.staging`
+
+### Registering Custom Marks
+
+Before using any custom mark, you must register it in your `pyproject.toml`:
+
+```toml
+[tool.pytest.ini_options]
+markers = [
+    "slow: marks tests as slow (deselect with '-m \"not slow\"')",
+    "integration: marks tests as integration tests",
+    "smoke: marks critical path tests",
+    "api: marks API-related tests",
+    "ui: marks UI-related tests"
+]
+```
 
 ## Notes
 
-### Test structure
-
-* The structure of the `tests` folder mirrors `src`.
-* `assert` statements include a second optional argument - a message to display
-when the test fails. Feel free to expose important values with f-strings -
-super helpful.
-* Tests are given names that give clues to their purpose. Multiple assertions
-can be grouped under the same test when multiple cases should be tested.
-
-### Collection versus Execution
-
-The discovery phase of a `pytest` workflow scans your repository for test
-modules, classes and functions. A list of tests to run is collated before any
-code is run. Once `pytest` is finished collecting tests, the test logic will
-be executed.
-
-> Collection is like creating a playlist. Execution is playing the songs.
+- Marks must be registered before use to avoid warnings
+- You can combine marks using `and`, `or`, and `not`
+- Example: `pytest -m "smoke and not slow"` runs only smoke tests that aren't
+slow
