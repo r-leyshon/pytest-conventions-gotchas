@@ -11,58 +11,26 @@ the README in the branches for specific guidance.
 2. Create a virtual environment with python 3.12 or later.
 3. Install the requirements.
 
-## Branch Overview: `main`
+## Branch Overview: `7-tmp`
 
-This branch demonstrates common pitfalls in pytest, particularly focusing on
-collection-time side effects.
+This branch demonstrates how to properly handle file system side effects in
+pytest tests, specifically focusing on log file cleanup. It builds upon the
+issues shown in branch `2-collection-side-effects` by implementing proper test
+cleanup.
+
+- Uses pytest's built-in `tmp_path` fixture to create temporary directories for
+test files
+- Automatically cleans up test artifacts after each test execution
+- Demonstrates proper file handling in tests that need to write to the
+filesystem
+- Shows how to verify file contents while maintaining test isolation
 
 ## Instructions
 
-1. Run the collection side effects example:
+1. Run the tests to see how temporary files are handled:
    ```bash
-   pytest tests/test_collection_side_effects.py --collect-only
+   pytest tests/test_logger.py -v
    ```
-   Notice that the log file is created in the `logs` directory during
-   collection, before any tests actually run.
+2. Notice that no log files remain after test execution
+3. Compare this implementation with branch `2-collection-side-effects`.
 
-2. Run a different test file:
-   ```bash
-   pytest tests/test_fizzbuzz.py -v
-   ```
-   Notice that no log file is created because the collection side effects
-   module is not imported.
-
-## Notes
-
-### Collection-time Side Effects
-
-The `collection_side_effects.py` module demonstrates how default arguments in
-function signatures can cause side effects during pytest's collection phase.
-This is particularly important to be aware of when:
-
-- Using default arguments that have side effects
-- Defining fixtures or test functions with default arguments
-- Working with any code that might have side effects in function signatures
-
-### Best Practices
-
-To avoid collection-time side effects, consider these approaches:
-
-If possible, consider logging only at the top level (eg in `main`), although
-the required level of logging may make this challenging.
-
-Otherwise, move function invocations to the function body:
-   ```python
-   # Instead of this:
-   def some_func(logger=write_to_log("Logged from signature")):
-       pass
-
-   # Do this:
-   def some_func(logger=None):
-       if logger is None:
-           logger = write_to_log("Logged from body")
-       pass
-   ```
-
-This patterns ensure that side effects only occur when the function is actually
-called, not during collection.
