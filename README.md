@@ -11,7 +11,7 @@ the README in the branches for specific guidance.
 2. Create a virtual environment with python 3.12 or later.
 3. Install the requirements.
 
-## Branch Overview: `main`
+## Branch Overview: `2-collection-side-effects`
 
 This branch demonstrates common pitfalls in pytest, particularly focusing on
 collection-time side effects.
