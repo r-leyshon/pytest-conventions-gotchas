@@ -2,4 +2,3 @@
 pythonpath = [
     "."
 ] 
-pytest-randomly = "^3.15.0"
