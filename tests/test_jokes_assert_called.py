@@ -1,6 +1,6 @@
 import pytest
 import requests
-from unittest.mock import Mock, call
+from unittest.mock import Mock
 
 from src.jokes import get_joke
 
