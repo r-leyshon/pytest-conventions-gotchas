@@ -46,3 +46,33 @@ to mocking in pytest:
    - Uses `unittest.mock.Mock` to track function calls
    - Demonstrates how to verify that mocked functions are called with correct
    arguments
+
+### What is a Test Double?
+
+A test double is a replacement object used in testing that stands in for a real
+object. Think of it like a stunt double in movies - it looks like the real
+thing but is used in situations where using the real thing would be impractical
+or risky. In our case:
+
+- The real `requests.get()` makes actual HTTP calls to the internet
+- Our test double (the mock) pretends to be `requests.get()` but returns predefined responses
+- This makes our tests:
+  - Faster (no network calls)
+  - Reliable (no dependency on external services)
+  - Predictable (we know exactly what response we'll get)
+
+In `test_jokes.py`, we create a simple test double that just returns a fixed
+response. In `test_jokes_assert_called.py`, we use a more sophisticated test
+double that can also track how it's used.
+
+### Mocking vs Patching
+
+While these terms are often used interchangeably, there are subtle differences:
+
+- **Patching** refers to the act of replacing a real object with a test double.
+In pytest, this is typically done using the `monkeypatch` fixture to
+temporarily replace objects during test execution.
+
+- **Mocking** is a specific type of patching where we create a test double that
+can track how it's used (like counting calls, recording arguments, etc.). This
+is what we do with `unittest.mock.Mock` in `test_jokes_assert_called.py`.
