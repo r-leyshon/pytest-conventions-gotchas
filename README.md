@@ -31,9 +31,9 @@ Practise invocation methods from the command line. Notice the number of tests
 1. `pytest`
 2. `pytest -v`
 3. `pytest --collect-only`
-3. `pytest tests/test_fizzbuzz.py`
-4. `pytest -v tests/test_fizzbuzz.py::test_fizzbuzz_buzzes`
-5. `pytest -k 'buzzes'`
+4. `pytest tests/test_fizzbuzz.py`
+5. `pytest -v tests/test_fizzbuzz.py::test_fizzbuzz_buzzes`
+6. `pytest -k 'buzzes'`
 
 ## Notes
 
