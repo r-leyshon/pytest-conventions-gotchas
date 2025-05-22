@@ -38,13 +38,6 @@ variables.
 
 ### Running Tests with Random Order
 
-To ensure tests are truly independent, use the pytest-randomly plugin to run
-tests in random order. Install the plugin and register in the `pyproject.toml`.
-The invoke with the plugin flag like so:
-
-```bash
-pytest -p randomly -v
-```
-
-This helps identify any hidden dependencies between tests that might only
-appear in certain execution orders.
+To help detect interdependencies in your test suite, install the
+`pytest-randomly` plugin, which will run the test suite in a different order
+each time. 
