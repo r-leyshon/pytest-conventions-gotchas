@@ -12,9 +12,6 @@ def write_to_log(log_message):
 
 
 def some_func_without_side_effects():
-    """
-    A simple function that processes a list of numbers.
-    """
     return None
 
 
