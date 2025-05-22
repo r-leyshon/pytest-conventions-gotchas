@@ -11,7 +11,7 @@ the README in the branches for specific guidance.
 2. Create a virtual environment with python 3.12 or later.
 3. Install the requirements.
 
-## Branch Overview: `7-dependencies-between-tests`
+## Branch Overview: `8-dependencies-between-tests`
 
 Install the updated dependencies.
 
