@@ -11,46 +11,34 @@ the README in the branches for specific guidance.
 2. Create a virtual environment with python 3.12 or later.
 3. Install the requirements.
 
-## Branch Overview: `main`
+## Branch Overview: `5-fixtures`
 
-This branch displays a modern & minimal setup where code in the `src` directory
-can be discovered by `pytest`. This code was written with python3.12 and
-`pytest==8.3.5`, older versions may require a different setup.
+This branch demonstrates:
 
-The source code is a simple fizzbuzz function.
+The src code remains unchanged from `main` branch. 
 
-Note the presence of a minimal `pyproject.toml`. This config step is important
-in fixing the `PYTHONPATH` so that `pytest` knows to discover code relative to
-the root directory rather than `tests`.
+The tests have been updated to demonstrate the use of fixtures.
 
 ## Instructions
 
-Practise invocation methods from the command line. Notice the number of tests
-**collected** and **executed** with each command.
-
-1. `pytest`
-2. `pytest -v`
-3. `pytest --collect-only`
-3. `pytest tests/test_fizzbuzz.py`
-4. `pytest -v tests/test_fizzbuzz.py::test_fizzbuzz_buzzes`
-5. `pytest -k 'buzzes'`
+1. Review the example fixtures in `conftest.py`
+2. Study the test files to see how fixtures are used
 
 ## Notes
 
-### Test structure
+* **Autouse Fixtures** - including `autouse=True` will instruct `pytest` to
+inject the fixture into every test module. This reduces boilerplate but also
+makes the test less explicit. If this is not needed it can also reduce the
+performance of the test suite.
 
-* The structure of the `tests` folder mirrors `src`.
-* `assert` statements include a second optional argument - a message to display
-when the test fails. Feel free to expose important values with f-strings -
-super helpful.
-* Tests are given names that give clues to their purpose. Multiple assertions
-can be grouped under the same test when multiple cases should be tested.
+* **Fixture Scopes** - fixtures can be scoped at different levels:
+  - `function` (default): fixture is created for each test function
+  - `class`: fixture is created once per test class
+  - `module`: fixture is created once per module
+  - `session`: fixture is created once for the entire test session
+  - `package`: fixture is created once per package
 
-### Collection versus Execution
-
-The discovery phase of a `pytest` workflow scans your repository for test
-modules, classes and functions. A list of tests to run is collated before any
-code is run. Once `pytest` is finished collecting tests, the test logic will
-be executed.
-
-> Collection is like creating a playlist. Execution is playing the songs.
+Choosing the right scope is crucial for test performance and resource
+management. Use broader scopes (module/session) for expensive setup operations,
+but be careful about test isolation. Narrower scopes (function) provide better
+isolation but may impact performance if the setup is expensive.
